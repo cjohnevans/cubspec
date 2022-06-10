@@ -1,4 +1,4 @@
-function [spectro] = cubspec_fida_proc( spectro_file_list , legend_info, write_jmrui, ...
+function [spectro] = cubspec_fida_proc( spectro_file_list , water_file_list, legend_info, write_jmrui, ...
     write_dir)
 %  basic preprocessing for semi-laser 7T data using FID-A
 %    spectro_file_list: cell array of files to load
@@ -13,8 +13,19 @@ offset_val = 2 * 10 .^ (-7);
 offset = repmat(([1:n_files ] * offset_val), [4096, 1]); 
 
 for file = 1:n_files
-    spectro{file} = io_loadspec_twix(spectro_file_list{file});
-    spectro{file} = op_addrcvrs(spectro{file}, 1, 'w');
+    if water_file_list{1}
+        disp(strcat('io_loadspec_twix ', spectro_file_list{file}, ' ', water_file_list{file}))
+        spectro{file} = io_loadspec_twix(spectro_file_list{file});
+        water{file} = io_loadspec_twix(water_file_list{file});
+        spectro{file}, water{file} = op_combineRcvrs(spectro{file}, water{file})
+        disp('op_combineRcvrs')
+    else
+        disp(strcat('io_loadspec_twix ', str(spectro_file_list{file}, ' ')))
+        spectro{file} = io_loadspec_twix(spectro_file_list{file});
+        spectro{file} = op_addrcvrs(spectro{file}, 1, 'w');
+        disp('op_addrcvrs')
+    end
+    
     spectro{file} = op_alignAverages(spectro{file});
     spectro{file} = op_averaging(spectro{file});
     %spectro_ph = op_addphase(spectro, -55, -0.00032, 2,0) % phase relative to naa, wand
