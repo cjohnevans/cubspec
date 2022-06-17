@@ -18,9 +18,10 @@ for file = 1:n_files
         spectro{file} = io_loadspec_twix(spectro_file_list{file});
         water{file} = io_loadspec_twix(water_file_list{file});
         spectro{file}, water{file} = op_combineRcvrs(spectro{file}, water{file})
+        spectro{file} = op_addrcvrs(spectro{file}, 1, 'w')
         disp('op_combineRcvrs')
     else
-        disp(strcat('io_loadspec_twix ', str(spectro_file_list{file}, ' ')))
+        disp(strcat('io_loadspec_twix ', spectro_file_list{file}, ' '))
         spectro{file} = io_loadspec_twix(spectro_file_list{file});
         spectro{file} = op_addrcvrs(spectro{file}, 1, 'w');
         disp('op_addrcvrs')
