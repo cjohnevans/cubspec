@@ -10,7 +10,7 @@ n_files = length(spectro_file_list);
 
 % offset value for plotting
 offset_val = 2 * 10 .^ (-7);
-offset = repmat(([1:n_files ] * offset_val), [4096, 1]); 
+
 
 for file = 1:n_files
     if water_file_list{1}
@@ -32,6 +32,10 @@ for file = 1:n_files
     %spectro_ph = op_addphase(spectro, -55, -0.00032, 2,0) % phase relative to naa, wand
     spectro{file} = op_addphase(spectro{file}, -55, -0.00020, 2,1); % phase relative to naa, thal
     %spectro_ph = op_addphase(spectro, 0, -0.00000, 2,1) % phase relative to naa, thal
+    
+    offset = repmat(([1:n_files ] * offset_val), [length(spectro{file}.specs), 1]); 
+    disp('Length of spec')
+    disp(length(spectro{file}.specs))
     spec_plot(:,file) = spectro{file}.specs + offset(:, file);
     if write_jmrui
         out_file = strcat(write_dir, legend_info{file}, '.jmrui')
