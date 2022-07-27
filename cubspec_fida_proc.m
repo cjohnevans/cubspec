@@ -1,10 +1,11 @@
-function [spectro] = cubspec_fida_proc( spectro_file_list , water_file_list, legend_info, write_jmrui, ...
-    write_dir)
+function [spectro] = cubspec_fida_proc( spectro_file_list , water_file_list, ...
+    legend_info, write_jmrui, write_dir, align_avgs)
 %  basic preprocessing for semi-laser 7T data using FID-A
 %    spectro_file_list: cell array of files to load
 %    legend_info:       cell array of text labels for plot
 %    write_jmrui:       write jmrui file (for tarquin).  true/false
 %    write_dir:         specify the write directory
+%    align_avgs:        perform spectral registration
 
 n_files = length(spectro_file_list);
 
@@ -27,7 +28,10 @@ for file = 1:n_files
         disp('op_addrcvrs')
     end
     
-    spectro{file} = op_alignAverages(spectro{file});
+    if align_avgs == true
+        spectro{file} = op_alignAverages(spectro{file});
+    end
+    
     spectro{file} = op_averaging(spectro{file});
     %spectro_ph = op_addphase(spectro, -55, -0.00032, 2,0) % phase relative to naa, wand
     spectro{file} = op_addphase(spectro{file}, -55, -0.00020, 2,1); % phase relative to naa, thal
